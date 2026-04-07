@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Get the Document</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a18;
+      --paper: #f5f2ec;
+      --accent: #c8552a;
+      --muted: #7a7870;
+      --border: #d9d5cc;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+    }
+
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .eyebrow {
+      font-size: 1.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      line-height: 1.15;
+      margin-bottom: 0.9rem;
+      color: var(--ink);
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .description {
+      font-size: 1.95rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 2.2rem;
+      max-width: 340px;
+    }
+
+    .divider {
+      width: 36px;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 2.2rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="email"]:focus {
+      border-color: var(--ink);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 0.6rem;
+      padding: 0.9rem 1.2rem;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover { background: #2d2d2a; }
+    button:active { transform: scale(0.99); }
+    button:disabled { background: var(--muted); cursor: not-allowed; }
+
+    .status {
+      margin-top: 0.9rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      min-height: 1.2em;
+      text-align: center;
+    }
+
+    .status.error { color: var(--accent); }
+
+    .fine-print {
+      margin-top: 2rem;
+      font-size: 0.72rem;
+      color: var(--border);
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <p class="eyebrow">CDS 2026</p>
+  <h1><em>Thanks for stopping by!</em> Want my poster<br>delivered to your inbox?</h1>
+  <p class="description">
+    Enter your email below.
+  </p>
+  <div class="divider"></div>
+
+  <div class="field">
+    <label for="email">Your email address</label>
+    <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+  </div>
+
+  <button id="submit-btn" onclick="handleSubmit()">Send it to me →</button>
+  <p class="status" id="status"></p>
+
+  <p class="fine-print"></p>
+</div>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ─── CONFIGURE THESE ──────────────────────────────────────────────
+  const EMAILJS_PUBLIC_KEY  = "3A8418JKwNKB9bI8H";   // from EmailJS dashboard
+  const EMAILJS_SERVICE_ID  = "service_srojpsc";   // e.g. "service_abc123"
+  const EMAILJS_TEMPLATE_ID = "template_gp9ssrb";  // e.g. "template_xyz789"
+  // ──────────────────────────────────────────────────────────────────
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  async function handleSubmit() {
+    const emailInput = document.getElementById("email");
+    const btn        = document.getElementById("submit-btn");
+    const status     = document.getElementById("status");
+    const email      = emailInput.value.trim();
+
+    // Basic validation
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      status.textContent = "Please enter a valid email address.";
+      status.className = "status error";
+      return;
+    }
+
+    btn.disabled     = true;
+    btn.textContent  = "Sending…";
+    status.textContent = "";
+    status.className = "status";
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: email,
+      });
+      // Redirect to thank-you page on success
+      window.location.href = "thank-you.html";
+    } catch (err) {
+      console.error(err);
+      status.textContent = "Something went wrong. Please try again.";
+      status.className = "status error";
+      btn.disabled    = false;
+      btn.textContent = "Send it to me →";
+    }
+  }
+
+  // Allow Enter key to submit
+  document.getElementById("email").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") handleSubmit();
+  });
+</script>
+
+</body>
+</html>

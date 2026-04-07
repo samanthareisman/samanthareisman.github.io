@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Check your inbox</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a18;
+      --paper: #f5f2ec;
+      --accent: #c8552a;
+      --muted: #7a7870;
+      --border: #d9d5cc;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+    }
+
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .icon {
+      font-size: 2.4rem;
+      margin-bottom: 1.4rem;
+      display: block;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .description {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .divider {
+      width: 36px;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem auto;
+    }
+
+    .fine-print {
+      font-size: 0.75rem;
+      color: var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <span class="icon">✉️</span>
+  <h1>It's on its<br><em>way.</em></h1>
+  <p class="description">
+    Check your inbox! Feel free to respond directly to that email with any questions or thoughts.
+  </p>
+  <div class="divider"></div>
+  <p class="fine-print">You can close this tab.</p>
+</div>
+
+</body>
+</html>
